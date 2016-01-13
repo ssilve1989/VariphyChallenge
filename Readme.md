@@ -50,3 +50,12 @@ Some other design notes can be found through comments in each class as to why I 
 # Improvements
 The current implementation deals with data on a JSON basis. I could make this slightly more Object Oriented by creating a Beer object
 and then there would be a better relationship between BeerUtils and the Beer class. As of now BeerUtils is sort of ambiguous.
+
+# Running the Program from CLI
+
+```
+mvn exec:java -Dexec.mainClass="com.variphy.challenge.App" -Dexec.classpathScope=runtime -Dexec.args="'-abvMin' '"6.3"' '-loggingEnabled' '-abvMax' '8.00'"
+```
+```
+mvn exec:java -Dexec.mainClass="com.variphy.challenge.App" -Dexec.classpathScope=runtime -Dexec.args="'-abvMin' '"6.3"' '-loggingEnabled' '-keyword' 'Ale'"
+```
