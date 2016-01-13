@@ -10,10 +10,8 @@ import com.variphy.challenge.interfaces.BeerFilter;
 
 /**
  * Filters by keyword appearing in the name or description of the beer. It will match based on the occurence
- * of the entire keyword token. Partial matching could be implemented via Pattern matching if desired and would
- * be another Filter.
- *
- * TODO contains will match any occurence, we want it token based so use a pattern
+ * of the entire keyword token. Partial matching could be implemented via Pattern matching or String.contains()
+ * if desired and would be another Filter implementing BeerFilter
  */
 public class KeywordFilter implements BeerFilter {
 
@@ -24,7 +22,7 @@ public class KeywordFilter implements BeerFilter {
 	}
 
 	/**
-	 * Performs a case-insensitive keyword search by lowercasing the input and comparison variables.
+	 * Performs a case-insensitive keyword search
 	 *
 	 * @param elements
 	 * @return a filtered linkedlist where non-matching items have been removed
