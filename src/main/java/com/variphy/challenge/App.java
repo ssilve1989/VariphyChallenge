@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ import com.variphy.challenge.config.AppConfig;
 import com.variphy.challenge.filters.ABVFilter;
 import com.variphy.challenge.filters.KeywordFilter;
 import com.variphy.challenge.services.BreweryService;
+import com.variphy.challenge.utils.BeerUtils;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -46,6 +48,8 @@ import org.apache.commons.cli.ParseException;
  */
 public class App {
 
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-DD-YYYY");
+
 	public static void main(String[] args) {
 		CommandLineParser parser = new DefaultParser();
 
@@ -66,14 +70,16 @@ public class App {
 				JsonObject rootObj = root.getAsJsonObject();
 
 				if (rootObj.has("data")) {
-					JsonArray elements = rootObj.get("data").getAsJsonArray();
+					JsonArray data = rootObj.get("data").getAsJsonArray();
 					//Extract into a Java Collection since there is no easy way to sort these data structures
-					List<JsonObject> data = new LinkedList<>();
+					List<JsonObject> elements = new LinkedList<>();
 
-					for (JsonElement element : elements) {
+					for (JsonElement d : data) {
 						//assuming that the contents of the data array are always json objects and not arrays
-						data.add(element.getAsJsonObject());
+						elements.add(d.getAsJsonObject());
 					}
+
+					data = null; //Free up this object for the next GC since we don't need it anymore.
 
 				    /*
 				        The filters are separated to promote larger flexibility throughout a potentially
@@ -86,26 +92,24 @@ public class App {
 
 					//filter before sorting
 					ABVFilter abvFilter = new ABVFilter(minABV, maxABV);
-					List<JsonObject> filtered = abvFilter.filter(data);
+					elements = abvFilter.filter(elements);
 
 					//If there was a search keyword we now want to filter again
 					if (commandLine.hasOption(AppConfig.KEYWORD_OPTION)) {
 						String keyword = commandLine.getOptionValue(AppConfig.KEYWORD_OPTION);
 						KeywordFilter keywordFilter = new KeywordFilter(keyword);
 
-						filtered = keywordFilter.filter(filtered);
+						elements = keywordFilter.filter(elements);
 					}
 
-					Collections.sort(filtered, Collections.reverseOrder(new BeerDateComparator()));
-
-					Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+					Collections.sort(elements, Collections.reverseOrder(new BeerDateComparator()));
+					printResults(elements);
 
 					//Write out a log if logging enabled
 					if (commandLine.hasOption(AppConfig.LOGGING_OPTION)) {
-						writeResult(gson.toJson(filtered));
+						Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+						logResult(gson.toJson(elements));
 					}
-					System.out.println(gson.toJson(filtered));
-
 				}
 				else {
 					System.err.println("No data could be found in response.");
@@ -124,12 +128,45 @@ public class App {
 		}
 	}
 
+	private static void printResults(final List<JsonObject> elements) {
+		System.out.println("------- Results -------");
+		StringBuilder sBuilder = new StringBuilder();
+
+		for(JsonObject object : elements){
+			String name = BeerUtils.getAsString(object, "name");
+			String id = BeerUtils.getAsString(object, "id");
+			String description = BeerUtils.getAsString(object, "description");
+			String dateStr = BeerUtils.getAsString(object, "createDate");
+			//special cases, so no attribute is passed in
+			Float abv = BeerUtils.getABV(object);
+			Float ibu = BeerUtils.getIBU(object);
+
+			try {
+				Date d = dateFormat.parse(dateStr);
+				dateStr = dateFormat.format(d);
+			}
+			catch (java.text.ParseException e) {
+				e.printStackTrace();
+			}
+
+			sBuilder.append("Name: ").append(name).append("\n")
+					.append("ID: ").append(id).append("\n")
+					.append("Description: ").append(description).append("\n")
+					.append("ABV: ").append(abv).append("\n")
+					.append("IBU: ").append(ibu).append("\n")
+					.append("Create Date: ").append(dateStr).append("\n\n");
+
+			System.out.println(sBuilder.toString());
+			sBuilder.setLength(0); //reset and reuse the same object
+		}
+	}
+
 	/**
 	 * Write result to a log file with timestamp
 	 *
 	 * @param s
 	 */
-	private static void writeResult(String s) {
+	private static void logResult(String s) {
 		Date now = new Date();
 		String filename = "./resources/out/out-" + now.toString() + ".log";
 		try {
