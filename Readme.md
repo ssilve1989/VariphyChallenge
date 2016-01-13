@@ -32,12 +32,21 @@ IBU: 67
 Create Date: 3/21/2012
 ```
 
-## Assumptions
+# Assumptions
 I assume that if an item has a minimum ABV value of 5.0 and a maximum ABV value of 10.0 that invoking this program with an argument of minimum ABV = 6.1 will return this result as it can *sometimes* meet the minimum ABV of 5.
 
-## Notes
+Some values don't appear in the main object or the style object and therefore will result in either an empty string or null number value. This is expected output.
+That means that if you provide a constraint on min/max abv and the abv cannot be determined, it will show you this item anyway.
+
+# Notes
 Java is fairly poor when dealing with JSON causing things to be overly verbose. I chose to do this as a CLI application to showcase more raw Java capabilities and style. In reality, in a web application context, I would likely let JavaScript deal with the JSON and only use Java to make a request to the service, if even that. Generally it is better to let JavaScript deal with it, especially if you would be going back/forth to the server with different filters/requests on the initial json object.
 
 I used some Java 8 Streaming features in the Test cases but restricted myself from using it anywhere in the actual application. They are pretty neat though.
 
+I used the Joda-Time library to deal with dates because the Java Date API is pretty bad. Java 8 brings over some things from Joda-Time but I did not use that.
+
 Some other design notes can be found through comments in each class as to why I did certain things and what I would do differently in a production environment.
+
+# Improvements
+The current implementation deals with data on a JSON basis. I could make this slightly more Object Oriented by creating a Beer object
+and then there would be a better relationship between BeerUtils and the Beer class. As of now BeerUtils is sort of ambiguous.

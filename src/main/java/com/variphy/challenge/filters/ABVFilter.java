@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.JsonObject;
-import com.variphy.challenge.config.AppConfig;
 import com.variphy.challenge.interfaces.BeerFilter;
+import com.variphy.challenge.utils.BeerUtils;
 
 /**
  * Filters out any items that don't meet the minimum requirements
@@ -26,25 +26,19 @@ public class ABVFilter implements BeerFilter {
 		//iterate through removing as needed
 		Iterator<JsonObject> iterator = elements.iterator();
 		while (iterator.hasNext()) {
-			boolean remove = false;
+			boolean remove;
 
 			final JsonObject obj = iterator.next();
-			JsonObject style = null;
 
-			Float oAbvMin = null, oAbvMax = null;
+			Float oAbvMin, oAbvMax;
 
-			if (obj.has("style")) {
-				style = obj.get("style").getAsJsonObject();
+			oAbvMin = BeerUtils.getAsFloat(obj, BeerUtils.MIN_ABV);
+			oAbvMax = BeerUtils.getAsFloat(obj, BeerUtils.MAX_ABV);
 
-				if (style.has(AppConfig.MIN_ABV) && style.has(AppConfig.MAX_ABV)) {
-					oAbvMin = style.get(AppConfig.MIN_ABV).getAsFloat();
-					oAbvMax = style.get(AppConfig.MAX_ABV).getAsFloat();
-				}
-			}
 			if (oAbvMin == null) {
-				if (obj.has("abv")) {
+				if (obj.has(BeerUtils.ABV)) {
 					//use abv as the sole value
-					oAbvMax = oAbvMin = obj.get("abv").getAsFloat();
+					oAbvMax = oAbvMin = BeerUtils.getAsFloat(obj, BeerUtils.ABV);
 				}
 				else {
 					//no abv value could be determined, leave it alone

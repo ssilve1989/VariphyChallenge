@@ -1,9 +1,6 @@
 package com.variphy.challenge.comparator;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Comparator;
-import java.util.Date;
 
 import com.google.gson.JsonObject;
 

@@ -15,6 +15,7 @@ public class AppConfig {
 	public static final String LOGGING_OPTION = "loggingEnabled";
 
 	public static final Options options = new Options();
+
 	static {
 		options.addOption(KEYWORD_OPTION, true, "Search keyword");
 		options.addOption(MIN_ABV, true, "Minimum ABV (Alcohol By Volume) value");
@@ -23,11 +24,12 @@ public class AppConfig {
 	}
 
 	public static final DateTimeFormatter dateParsers;
-	static{
+
+	static {
 		DateTimeParser[] parsers = {
 				DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss").getParser(),
 				DateTimeFormat.forPattern("yy-MM-dd HH:mm:ss").getParser(),
-		};
+				};
 		dateParsers = new DateTimeFormatterBuilder().append(null, parsers).toFormatter();
 	}
 

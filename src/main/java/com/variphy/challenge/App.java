@@ -139,7 +139,7 @@ public class App {
 		System.out.println("------- Results -------");
 		StringBuilder sBuilder = new StringBuilder();
 
-		for(JsonObject object : elements){
+		for (JsonObject object : elements) {
 			String name = BeerUtils.getAsString(object, "name");
 			String id = BeerUtils.getAsString(object, "id");
 			String description = BeerUtils.getAsString(object, "description");
@@ -153,11 +153,11 @@ public class App {
 
 
 			sBuilder.append("Name: ").append(name).append("\n")
-					.append("ID: ").append(id).append("\n")
-					.append("Description: ").append(description).append("\n")
-					.append("ABV: ").append(abv).append("\n")
-					.append("IBU: ").append(ibu).append("\n")
-					.append("Create Date: ").append(dateStr).append("\n\n");
+			        .append("ID: ").append(id).append("\n")
+			        .append("Description: ").append(description).append("\n")
+			        .append("ABV: ").append(abv).append("\n")
+			        .append("IBU: ").append(ibu).append("\n")
+			        .append("Create Date: ").append(dateStr).append("\n\n");
 
 			System.out.println(sBuilder.toString());
 			sBuilder.setLength(0); //reset and reuse the same object

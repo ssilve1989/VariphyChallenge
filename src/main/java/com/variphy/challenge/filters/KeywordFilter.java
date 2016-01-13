@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import com.google.gson.JsonObject;
 import com.variphy.challenge.interfaces.BeerFilter;
+import com.variphy.challenge.utils.BeerUtils;
 
 /**
  * Filters by keyword appearing in the name or description of the beer. It will match based on the occurence
@@ -36,34 +37,9 @@ public class KeywordFilter implements BeerFilter {
 
 		while (iterator.hasNext()) {
 			final JsonObject obj = iterator.next();
-			JsonObject style = null;
 
-			String name = "";
-			String description = "";
-
-			if (obj.has("style")) {
-				style = obj.get("style").getAsJsonObject();
-			}
-
-			if (obj.has("name")) {
-				name = obj.get("name").getAsString();
-			}
-
-			if (obj.has("description")) {
-				description = obj.get("description").getAsString();
-			}
-
-			if (name.isEmpty()) {
-				if (style != null) {
-					name = style.get("name").getAsString();
-				}
-			}
-
-			if (description.isEmpty()) {
-				if (style != null) {
-					description = style.get("description").getAsString();
-				}
-			}
+			String name = BeerUtils.getAsString(obj, BeerUtils.NAME);
+			String description = BeerUtils.getAsString(obj, BeerUtils.DESCRIPTION);
 
 			final Matcher nameMatcher = keywordPattern.matcher(name);
 			final Matcher descriptionMatcher = keywordPattern.matcher(description);
