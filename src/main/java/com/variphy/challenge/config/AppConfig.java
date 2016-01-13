@@ -11,6 +11,7 @@ public class AppConfig {
 	public static final String LOGGING_OPTION = "loggingEnabled";
 
 	public static final Options options = new Options();
+
 	static {
 		options.addOption(KEYWORD_OPTION, true, "Search keyword");
 		options.addOption(MIN_ABV_OPTION, true, "Minimum ABV (Alcohol By Volume) value");

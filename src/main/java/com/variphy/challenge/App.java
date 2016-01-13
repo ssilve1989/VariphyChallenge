@@ -37,18 +37,17 @@ import org.apache.commons.cli.ParseException;
  * If the API doesn't return a necessary value (such as ABV or description) for a beer,
  * then a suitable value from the element/property "style" should be used instead.
  *
- *  Notes:
+ * Notes:
  *
  * 1) Ideally I would include a logging framework for log statements.
  * 3) The application checks if there is at least one argument min/max but retrieves both anyway. This is just for
  * execution validation purposes since if one does happen to be null, the filters will handle them safely. Also if they
  * happen to be unparseable to Float they will be safely handled as well.
- *
  */
-public class App
-{
+public class App {
 	/**
 	 * Will check that the command line contains the required arguments to run this program.
+	 *
 	 * @param commandLine
 	 * @return True if all arguments are found on the command line, false otherwise.
 	 */
@@ -56,35 +55,34 @@ public class App
 		return (commandLine.hasOption(AppConfig.MAX_ABV_OPTION) || commandLine.hasOption(AppConfig.MIN_ABV_OPTION));
 	}
 
-    public static void main( String[] args )
-    {
+	public static void main(String[] args) {
 		CommandLineParser parser = new DefaultParser();
 
-	    try {
-		    CommandLine commandLine = parser.parse(AppConfig.options, args);
+		try {
+			CommandLine commandLine = parser.parse(AppConfig.options, args);
 
-		    if(hasRequiredArgs(commandLine)){
-			    Float minABV = commandLine.hasOption(AppConfig.MIN_ABV_OPTION) ?
-			                   Float.parseFloat(commandLine.getOptionValue(AppConfig.MIN_ABV_OPTION)) : null;
+			if (hasRequiredArgs(commandLine)) {
+				Float minABV = commandLine.hasOption(AppConfig.MIN_ABV_OPTION) ?
+				               Float.parseFloat(commandLine.getOptionValue(AppConfig.MIN_ABV_OPTION)) : null;
 
-			    Float maxABV = commandLine.hasOption(AppConfig.MAX_ABV_OPTION) ?
-			                   Float.parseFloat(commandLine.getOptionValue(AppConfig.MAX_ABV_OPTION)) : null;
+				Float maxABV = commandLine.hasOption(AppConfig.MAX_ABV_OPTION) ?
+				               Float.parseFloat(commandLine.getOptionValue(AppConfig.MAX_ABV_OPTION)) : null;
 
-			    BreweryService breweryService = BreweryService.getService();
+				BreweryService breweryService = BreweryService.getService();
 
-			    //Load up the beers for the Harpoon Brewery
-			    JsonElement root = breweryService.getBeersByBrewery(AppConfig.BREWERY_ID);
-			    JsonObject rootObj = root.getAsJsonObject();
+				//Load up the beers for the Harpoon Brewery
+				JsonElement root = breweryService.getBeersByBrewery(AppConfig.BREWERY_ID);
+				JsonObject rootObj = root.getAsJsonObject();
 
-			    if(rootObj.has("data")){
-				    JsonArray elements = rootObj.get("data").getAsJsonArray();
-				    //Extract into a Java Collection since there is no easy way to sort these data structures
-				    List<JsonObject> data = new LinkedList<>();
+				if (rootObj.has("data")) {
+					JsonArray elements = rootObj.get("data").getAsJsonArray();
+					//Extract into a Java Collection since there is no easy way to sort these data structures
+					List<JsonObject> data = new LinkedList<>();
 
-				    for(JsonElement element : elements){
-					    //assuming that the contents of the data array are always json objects and not arrays
+					for (JsonElement element : elements) {
+						//assuming that the contents of the data array are always json objects and not arrays
 						data.add(element.getAsJsonObject());
-				    }
+					}
 
 				    /*
 				        The filters are separated to promote larger flexibility throughout a potentially
@@ -95,49 +93,52 @@ public class App
 				        so that should make up for it somewhat.
 				     */
 
-				    //filter before sorting
-				    ABVFilter abvFilter = new ABVFilter(minABV, maxABV);
-				    List<JsonObject> filtered = abvFilter.filter(data);
+					//filter before sorting
+					ABVFilter abvFilter = new ABVFilter(minABV, maxABV);
+					List<JsonObject> filtered = abvFilter.filter(data);
 
-				    //If there was a search keyword we now want to filter again
-				    if(commandLine.hasOption(AppConfig.KEYWORD_OPTION)){
-					    String keyword = commandLine.getOptionValue(AppConfig.KEYWORD_OPTION);
-					    KeywordFilter keywordFilter = new KeywordFilter(keyword);
+					//If there was a search keyword we now want to filter again
+					if (commandLine.hasOption(AppConfig.KEYWORD_OPTION)) {
+						String keyword = commandLine.getOptionValue(AppConfig.KEYWORD_OPTION);
+						KeywordFilter keywordFilter = new KeywordFilter(keyword);
 
-					    filtered = keywordFilter.filter(filtered);
-				    }
+						filtered = keywordFilter.filter(filtered);
+					}
 
-				    Collections.sort(filtered, new BeerDateComparator());
+					Collections.sort(filtered, new BeerDateComparator());
 
-				    Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+					Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-				    //Write out a log if logging enabled
-				    if(commandLine.hasOption(AppConfig.LOGGING_OPTION)){
-					    writeResult(gson.toJson(filtered));
-				    }
-				    System.out.println(gson.toJson(filtered));
+					//Write out a log if logging enabled
+					if (commandLine.hasOption(AppConfig.LOGGING_OPTION)) {
+						writeResult(gson.toJson(filtered));
+					}
+					System.out.println(gson.toJson(filtered));
 
-			    }else{
-				    System.err.println("No data could be found in response.");
-				    System.exit(-2);
-			    }
+				}
+				else {
+					System.err.println("No data could be found in response.");
+					System.exit(-2);
+				}
 
-		    }else{
-			    System.err.println("Invalid arguments provided");
-			    new HelpFormatter().printHelp("Harpoon Brewery", AppConfig.options);
-			    System.exit(-1);
-		    }
-	    }
-	    catch (ParseException e) {
-		    System.err.println("Failed to parse arguments. " + e.getMessage());
-	    }
-    }
+			}
+			else {
+				System.err.println("Invalid arguments provided");
+				new HelpFormatter().printHelp("Harpoon Brewery", AppConfig.options);
+				System.exit(-1);
+			}
+		}
+		catch (ParseException e) {
+			System.err.println("Failed to parse arguments. " + e.getMessage());
+		}
+	}
 
 	/**
 	 * Write result to a log file with timestamp
+	 *
 	 * @param s
 	 */
-	private static void writeResult(String s){
+	private static void writeResult(String s) {
 		Date now = new Date();
 		String filename = "./resources/out-" + now.toString() + ".log";
 		try {

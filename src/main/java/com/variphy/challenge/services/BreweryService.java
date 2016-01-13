@@ -54,7 +54,7 @@ public class BreweryService {
 		try {
 			URL url = new URL(sUrl);
 			request = (HttpURLConnection) url.openConnection();
-			return this.jsonParser.parse(new InputStreamReader((InputStream)request.getContent()));
+			return this.jsonParser.parse(new InputStreamReader((InputStream) request.getContent()));
 		}
 		catch (IOException e) {
 			e.printStackTrace();

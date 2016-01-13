@@ -32,19 +32,19 @@ public class FilterTest {
 
 		//Java 8 Streaming API
 		String rawJson = Files.lines(Paths.get("./resources/data.json"))
-                            .parallel()
-							.map(String::trim)
-							.collect(Collectors.joining());
+		                      .parallel()
+		                      .map(String::trim)
+		                      .collect(Collectors.joining());
 
 		JsonArray root = jsonParser.parse(rawJson).getAsJsonObject().get("data").getAsJsonArray();
 
-		for(JsonElement e : root){
+		for (JsonElement e : root) {
 			elements.add(e.getAsJsonObject());
 		}
 	}
 
 	@Test
-	public void testKeywordFilter(){
+	public void testKeywordFilter() {
 		KeywordFilter keywordFilter = new KeywordFilter("eiusmod");
 
 		List<JsonObject> filtered = keywordFilter.filter(elements);
@@ -54,7 +54,7 @@ public class FilterTest {
 
 	//Gonna waste memory and check all my use cases in one method
 	@Test
-	public void testABVFilter(){
+	public void testABVFilter() {
 		JsonObject obj = new JsonObject();
 		JsonObject style = new JsonObject();
 

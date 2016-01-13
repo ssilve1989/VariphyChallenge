@@ -13,9 +13,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.variphy.challenge.services.BreweryService;
 import com.variphy.challenge.comparator.BeerDateComparator;
 import com.variphy.challenge.config.AppConfig;
+import com.variphy.challenge.services.BreweryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,14 +57,14 @@ public class BreweryServiceTest {
 	}
 
 	@Test
-	public void testSortByDate(){
+	public void testSortByDate() {
 		BreweryService breweryService = BreweryService.getService();
 		JsonElement root = breweryService.getBeersByBrewery(AppConfig.BREWERY_ID);
 		JsonArray data = root.getAsJsonObject().get("data").getAsJsonArray();
 
 		List<JsonObject> list = new LinkedList<>();
 
-		for(JsonElement e : data){
+		for (JsonElement e : data) {
 			//test the abv values
 			list.add(e.getAsJsonObject());
 		}
@@ -72,7 +72,7 @@ public class BreweryServiceTest {
 		//Sort newest first by date
 		Collections.sort(list, Collections.reverseOrder(new BeerDateComparator()));
 
-		for(JsonObject beer : list){
+		for (JsonObject beer : list) {
 			System.out.println(beer.get("createDate").getAsString());
 		}
 

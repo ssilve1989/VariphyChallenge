@@ -15,16 +15,17 @@ import com.variphy.challenge.interfaces.BeerFilter;
  *
  * TODO contains will match any occurence, we want it token based so use a pattern
  */
-public class KeywordFilter implements BeerFilter{
+public class KeywordFilter implements BeerFilter {
 
 	private final String keyword;
 
-	public KeywordFilter(String keyword){
+	public KeywordFilter(String keyword) {
 		this.keyword = keyword;
 	}
 
 	/**
 	 * Performs a case-insensitive keyword search by lowercasing the input and comparison variables.
+	 *
 	 * @param elements
 	 * @return a filtered linkedlist where non-matching items have been removed
 	 */
@@ -42,26 +43,26 @@ public class KeywordFilter implements BeerFilter{
 			String name = "";
 			String description = "";
 
-			if(obj.has("style")){
+			if (obj.has("style")) {
 				style = obj.get("style").getAsJsonObject();
 			}
 
-			if(obj.has("name")){
+			if (obj.has("name")) {
 				name = obj.get("name").getAsString();
 			}
 
-			if(obj.has("description")){
+			if (obj.has("description")) {
 				description = obj.get("description").getAsString();
 			}
 
-			if(name.isEmpty()){
-				if(style != null){
+			if (name.isEmpty()) {
+				if (style != null) {
 					name = style.get("name").getAsString();
 				}
 			}
 
-			if(description.isEmpty()){
-				if(style != null){
+			if (description.isEmpty()) {
+				if (style != null) {
 					description = style.get("description").getAsString();
 				}
 			}
@@ -69,7 +70,7 @@ public class KeywordFilter implements BeerFilter{
 			final Matcher nameMatcher = keywordPattern.matcher(name);
 			final Matcher descriptionMatcher = keywordPattern.matcher(description);
 
-			if(!nameMatcher.find() && !descriptionMatcher.find()){
+			if (!nameMatcher.find() && !descriptionMatcher.find()) {
 				iterator.remove();
 			}
 		}
