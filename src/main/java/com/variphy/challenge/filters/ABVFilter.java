@@ -36,9 +36,9 @@ public class ABVFilter implements BeerFilter {
 			if (obj.has("style")) {
 				style = obj.get("style").getAsJsonObject();
 
-				if (style.has(AppConfig.MIN_ABV_OPTION) && style.has(AppConfig.MAX_ABV_OPTION)) {
-					oAbvMin = style.get(AppConfig.MIN_ABV_OPTION).getAsFloat();
-					oAbvMax = style.get(AppConfig.MAX_ABV_OPTION).getAsFloat();
+				if (style.has(AppConfig.MIN_ABV) && style.has(AppConfig.MAX_ABV)) {
+					oAbvMin = style.get(AppConfig.MIN_ABV).getAsFloat();
+					oAbvMax = style.get(AppConfig.MAX_ABV).getAsFloat();
 				}
 			}
 			if (oAbvMin == null) {

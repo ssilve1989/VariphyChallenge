@@ -52,7 +52,7 @@ public class App {
 	 * @return True if all arguments are found on the command line, false otherwise.
 	 */
 	private static boolean hasRequiredArgs(final CommandLine commandLine) {
-		return (commandLine.hasOption(AppConfig.MAX_ABV_OPTION) || commandLine.hasOption(AppConfig.MIN_ABV_OPTION));
+		return (commandLine.hasOption(AppConfig.MAX_ABV) || commandLine.hasOption(AppConfig.MIN_ABV));
 	}
 
 	public static void main(String[] args) {
@@ -62,11 +62,11 @@ public class App {
 			CommandLine commandLine = parser.parse(AppConfig.options, args);
 
 			if (hasRequiredArgs(commandLine)) {
-				Float minABV = commandLine.hasOption(AppConfig.MIN_ABV_OPTION) ?
-				               Float.parseFloat(commandLine.getOptionValue(AppConfig.MIN_ABV_OPTION)) : null;
+				Float minABV = commandLine.hasOption(AppConfig.MIN_ABV) ?
+				               Float.parseFloat(commandLine.getOptionValue(AppConfig.MIN_ABV)) : null;
 
-				Float maxABV = commandLine.hasOption(AppConfig.MAX_ABV_OPTION) ?
-				               Float.parseFloat(commandLine.getOptionValue(AppConfig.MAX_ABV_OPTION)) : null;
+				Float maxABV = commandLine.hasOption(AppConfig.MAX_ABV) ?
+				               Float.parseFloat(commandLine.getOptionValue(AppConfig.MAX_ABV)) : null;
 
 				BreweryService breweryService = BreweryService.getService();
 
