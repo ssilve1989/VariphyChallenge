@@ -105,7 +105,7 @@ public class App {
 						filtered = keywordFilter.filter(filtered);
 					}
 
-					Collections.sort(filtered, new BeerDateComparator());
+					Collections.sort(filtered, Collections.reverseOrder(new BeerDateComparator()));
 
 					Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
