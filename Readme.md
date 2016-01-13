@@ -38,6 +38,8 @@ I assume that if an item has a minimum ABV value of 5.0 and a maximum ABV value 
 Some values don't appear in the main object or the style object and therefore will result in either an empty string or null number value. This is expected output.
 That means that if you provide a constraint on min/max abv and the abv cannot be determined, it will show you this item anyway.
 
+I also assume that if no abv value is found I will use the average of min/max as its value.
+
 # Notes
 Java is fairly poor when dealing with JSON causing things to be overly verbose. I chose to do this as a CLI application to showcase more raw Java capabilities and style. In reality, in a web application context, I would likely let JavaScript deal with the JSON and only use Java to make a request to the service, if even that. Generally it is better to let JavaScript deal with it, especially if you would be going back/forth to the server with different filters/requests on the initial json object.
 
