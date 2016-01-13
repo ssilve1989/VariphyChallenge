@@ -140,7 +140,7 @@ public class App {
 	 */
 	private static void writeResult(String s) {
 		Date now = new Date();
-		String filename = "./resources/out-" + now.toString() + ".log";
+		String filename = "./resources/out/out-" + now.toString() + ".log";
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filename)));
 			writer.write(s);

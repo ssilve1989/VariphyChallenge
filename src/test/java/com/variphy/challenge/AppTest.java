@@ -39,7 +39,7 @@ public class AppTest {
 	//Some nifty Java 8 Streaming happening here to get most recent file
 	@Test
 	public void checkOrder() throws IOException {
-		Path dir = Paths.get("./resources/");
+		Path dir = Paths.get("./resources/out/");
 
 		Optional<Path> lastFilePath = Files.list(dir)
 		                                   .filter(f -> !Files.isDirectory(f))
