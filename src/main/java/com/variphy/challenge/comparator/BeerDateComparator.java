@@ -7,6 +7,10 @@ import java.util.Date;
 
 import com.google.gson.JsonObject;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 /**
  * Created by Steven Silvestri on 1/12/16.
  *
@@ -17,18 +21,13 @@ import com.google.gson.JsonObject;
  */
 public class BeerDateComparator implements Comparator<JsonObject> {
 
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
+	private final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public int compare(final JsonObject o1, final JsonObject o2) {
-		try {
-			Date d1 = dateFormat.parse(o1.get("createDate").getAsString());
-			Date d2 = dateFormat.parse(o2.get("createDate").getAsString());
+		DateTime d1 = dateFormat.parseDateTime(o1.get("createDate").getAsString());
+		DateTime d2 = dateFormat.parseDateTime(o2.get("createDate").getAsString());
 
-			return d1.compareTo(d2);
-		}
-		catch (ParseException e) {
-			throw new IllegalArgumentException(e);
-		}
+		return d1.compareTo(d2);
 	}
 }

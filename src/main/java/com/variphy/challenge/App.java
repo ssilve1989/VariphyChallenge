@@ -4,7 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -27,6 +27,9 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.ParseException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Write a Java program or application, using any type of Java libraries or technologies that you wish,
@@ -48,7 +51,11 @@ import org.apache.commons.cli.ParseException;
  */
 public class App {
 
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-DD-YYYY");
+	//private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
+	private static final DateTimeFormatter dateParsers = AppConfig.dateParsers;
+	private static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("MM/dd/yyyy");
+
+	private static final Calendar cal = Calendar.getInstance();
 
 	public static void main(String[] args) {
 		CommandLineParser parser = new DefaultParser();
@@ -141,13 +148,9 @@ public class App {
 			Float abv = BeerUtils.getABV(object);
 			Float ibu = BeerUtils.getIBU(object);
 
-			try {
-				Date d = dateFormat.parse(dateStr);
-				dateStr = dateFormat.format(d);
-			}
-			catch (java.text.ParseException e) {
-				e.printStackTrace();
-			}
+			DateTime dateTime = dateParsers.parseDateTime(dateStr);
+			dateStr = dateTime.toString(dateFormat);
+
 
 			sBuilder.append("Name: ").append(name).append("\n")
 					.append("ID: ").append(id).append("\n")
