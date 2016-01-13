@@ -45,15 +45,6 @@ import org.apache.commons.cli.ParseException;
  * happen to be unparseable to Float they will be safely handled as well.
  */
 public class App {
-	/**
-	 * Will check that the command line contains the required arguments to run this program.
-	 *
-	 * @param commandLine
-	 * @return True if all arguments are found on the command line, false otherwise.
-	 */
-	private static boolean hasRequiredArgs(final CommandLine commandLine) {
-		return (commandLine.hasOption(AppConfig.MAX_ABV) || commandLine.hasOption(AppConfig.MIN_ABV));
-	}
 
 	public static void main(String[] args) {
 		CommandLineParser parser = new DefaultParser();
@@ -150,6 +141,16 @@ public class App {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Will check that the command line contains the required arguments to run this program.
+	 *
+	 * @param commandLine
+	 * @return True if all arguments are found on the command line, false otherwise.
+	 */
+	private static boolean hasRequiredArgs(final CommandLine commandLine) {
+		return (commandLine.hasOption(AppConfig.MAX_ABV) || commandLine.hasOption(AppConfig.MIN_ABV));
 	}
 
 }
