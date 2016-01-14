@@ -55,8 +55,6 @@ public class App {
 	private static final DateTimeFormatter dateParsers = AppConfig.dateParsers;
 	private static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("MM/dd/yyyy");
 
-	private static final Calendar cal = Calendar.getInstance();
-
 	public static void main(String[] args) {
 		CommandLineParser parser = new DefaultParser();
 

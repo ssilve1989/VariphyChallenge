@@ -26,7 +26,7 @@ public class ABVFilter implements BeerFilter {
 		//iterate through removing as needed
 		Iterator<JsonObject> iterator = elements.iterator();
 		while (iterator.hasNext()) {
-			boolean remove;
+			boolean remove = false;
 
 			final JsonObject obj = iterator.next();
 
@@ -35,25 +35,23 @@ public class ABVFilter implements BeerFilter {
 			oAbvMin = BeerUtils.getAsFloat(obj, BeerUtils.MIN_ABV);
 			oAbvMax = BeerUtils.getAsFloat(obj, BeerUtils.MAX_ABV);
 
-			if (oAbvMin == null) {
+			if ((oAbvMin == null || oAbvMax == null)) {
 				if (obj.has(BeerUtils.ABV)) {
 					//use abv as the sole value
 					oAbvMax = oAbvMin = BeerUtils.getAsFloat(obj, BeerUtils.ABV);
 				}
-				else {
-					//no abv value could be determined, leave it alone
-					continue;
-				}
 			}
 
-			if (this.minABV != null && this.maxABV != null) {
-				remove = (this.minABV.compareTo(oAbvMin) == 1) || (this.maxABV.compareTo(oAbvMax) == -1);
-			}
-			else if (this.minABV != null) {
-				remove = (this.minABV.compareTo(oAbvMin) == 1 && this.minABV.compareTo(oAbvMax) == 1);
-			}
-			else {
-				remove = (this.maxABV.compareTo(oAbvMax) == -1);
+			if ((oAbvMax != null) && oAbvMin != null) {
+				if (this.minABV != null && this.maxABV != null) {
+					remove = (this.minABV.compareTo(oAbvMin) == 1) || (this.maxABV.compareTo(oAbvMax) == -1);
+				}
+				else if (this.minABV != null) {
+					remove = (this.minABV.compareTo(oAbvMin) == 1 && this.minABV.compareTo(oAbvMax) == 1);
+				}
+				else {
+					remove = (this.maxABV.compareTo(oAbvMax) == -1);
+				}
 			}
 
 			if (remove) {
